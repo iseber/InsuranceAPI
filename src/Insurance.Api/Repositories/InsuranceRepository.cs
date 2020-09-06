@@ -76,7 +76,7 @@ namespace Insurance.Api.Repositories
             var existingSurcharge = await GetSurchargeModelByProductTypeId(surcharge.ProductTypeId);
             if (existingSurcharge == null)
             {
-                await Create(existingSurcharge);
+                await Create(surcharge);
             }
             else
             {
