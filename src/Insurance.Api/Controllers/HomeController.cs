@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Threading.Tasks;
 using Insurance.Api.Models;
 using Insurance.Api.Services;
@@ -29,14 +30,14 @@ namespace Insurance.Api.Controllers
         }
         
         [HttpPost]
-        [Route("api/insurance/products")]
+        [Route("api/insurance/order")]
         public async Task<IActionResult> CalculateInsurance([FromBody] OrderInsuranceRequestModel requestModel)
         {
             var shoppingCartInsuranceResponseModel = new OrderInsuranceResponseModel();
             
-            foreach (var productId in requestModel.ProductIds)
+            foreach (var product in requestModel.Products)
             {
-                var insurance = await _insuranceDomainService.GetInsurance(productId);
+                var insurance = await _insuranceDomainService.GetInsurance(product.ProductId);
 
                 var insuranceResponseModel = new InsuranceResponseModel
                 {

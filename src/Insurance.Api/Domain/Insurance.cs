@@ -33,9 +33,8 @@ namespace Insurance.Api.Domain
         public void CalculateInsuranceValue(float insuranceValue)
         {
             if(!this.productTypeHasInsurance) return;
-
-            if(insuranceValue > 0)
-                this.insuranceValue += insuranceValue;
+            
+            this.insuranceValue += insuranceValue;
             
             // if (this.salesPrice < 500)
             // {
@@ -59,8 +58,7 @@ namespace Insurance.Api.Domain
 
         public void CalculateSurcharge(float surchargeValue)
         {
-            if(surchargeValue > 0)
-                this.insuranceValue += surchargeValue;
+            this.insuranceValue += surchargeValue;
         }
     }
 }

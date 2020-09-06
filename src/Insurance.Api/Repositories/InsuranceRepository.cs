@@ -1,5 +1,6 @@
 using System.Threading.Tasks;
 using Insurance.Api.Config;
+using Insurance.Api.Repositories.Models;
 using MongoDB.Driver;
 
 namespace Insurance.Api.Repositories
@@ -38,6 +39,37 @@ namespace Insurance.Api.Repositories
             var surchargeValue = surcharge.FirstOrDefault();
 
             return surchargeValue?.SurchargeCost ?? 0;
+        }
+        
+        public async Task<Surcharge> GetSurchargeModelByProductTypeId(int productTypeId)
+        {
+            var surcharge = await _surcharges.FindAsync(x => x.ProductTypeId == productTypeId);
+
+            return surcharge.FirstOrDefault();
+        }
+
+        public async Task Create(Surcharge surcharge)
+        {
+            await _surcharges.InsertOneAsync(surcharge);
+        }
+
+        public async Task Update(int productTypeId, Surcharge surcharge)
+        {
+            await _surcharges.ReplaceOneAsync(s => s.ProductTypeId == productTypeId, surcharge);
+        }
+
+        public async Task Upsert(Surcharge surcharge)
+        {
+            var existingSurcharge = await GetSurchargeModelByProductTypeId(surcharge.ProductTypeId);
+            if (existingSurcharge == null)
+            {
+                await Create(existingSurcharge);
+            }
+            else
+            {
+                surcharge.ProductTypeId = existingSurcharge.ProductTypeId;
+                Update(existingSurcharge.ProductTypeId, surcharge);
+            }
         }
     }
 }

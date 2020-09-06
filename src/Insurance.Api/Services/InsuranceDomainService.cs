@@ -17,13 +17,14 @@ namespace Insurance.Api.Services
         public async Task<Domain.Insurance> GetInsurance(int productId)
         {
             var productResponseModel = await _businessRules.GetProductTypeAndSalesPrice(productId);
-            
+
             var insurance = Domain.Insurance.New(productId, productResponseModel.SalesPrice,
                 productResponseModel.ProductTypeHasInsurance, productResponseModel.ProductTypeName);
 
             var insuranceValue = await _insuranceRepository.GetInsuranceByProductPrice(productResponseModel.SalesPrice);
-            var surchargeValue = await _insuranceRepository.GetSurchargeByProductTypeId(productResponseModel.ProductTypeId);
-            
+            var surchargeValue =
+                await _insuranceRepository.GetSurchargeByProductTypeId(productResponseModel.ProductTypeId);
+
             insurance.CalculateInsuranceValue(insuranceValue);
             insurance.CalculateSurcharge(surchargeValue);
 
