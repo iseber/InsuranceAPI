@@ -53,8 +53,9 @@ namespace Insurance.Api
                 c.SwaggerDoc(RunningEnvironment.BuildVersion, new OpenApiInfo{ Title = "Insurance API", Version = RunningEnvironment.BuildVersion });
             });
             
-            services.AddTransient<IBusinessRules, BusinessRules>();
+            services.AddSingleton<IBusinessRules, BusinessRules>();
             services.AddSingleton<IInsuranceRepository, InsuranceRepository>();
+            
             services.AddTransient<IInsuranceDomainService, InsuranceDomainService>();
         }
 
