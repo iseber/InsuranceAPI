@@ -39,7 +39,21 @@ namespace Insurance.Tests.Configuration
                                               productTypeId = 3,
                                               salesPrice = 250
                                           };
-                            var products = new [] {testProduct, laptopProduct};
+                            var tvProduct = new
+                                        {
+                                            id = 4,
+                                            name = "Digital cameras",
+                                            productTypeId = 4,
+                                            salesPrice = 2500
+                                        };
+                            var smartphoneProduct = new
+                                        {
+                                            id = 5,
+                                            name = "Smartphone",
+                                            productTypeId = 5,
+                                            salesPrice = 699
+                                        };
+                            var products = new [] {testProduct, laptopProduct, droneProduct, tvProduct, smartphoneProduct};
                             var product = products.First(x => x.id == productId);
                             
                             return context.Response.WriteAsync(JsonConvert.SerializeObject(product));
@@ -67,6 +81,18 @@ namespace Insurance.Tests.Configuration
                                                    {
                                                        id = 3,
                                                        name = "Drones",
+                                                       canBeInsured = true
+                                                   },
+                                                   new
+                                                   {
+                                                       id = 4,
+                                                       name = "Digital Cameras",
+                                                       canBeInsured = true
+                                                   },
+                                                   new
+                                                   {
+                                                       id = 5,
+                                                       name = "Smartphones",
                                                        canBeInsured = true
                                                    }
                                                };

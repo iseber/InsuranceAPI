@@ -87,6 +87,8 @@ namespace Insurance.Api
             {
                 endpoints.MapControllers();
             });
+            
+            SeedDatabase.Initialize(app.ApplicationServices);
         }
     }
 }

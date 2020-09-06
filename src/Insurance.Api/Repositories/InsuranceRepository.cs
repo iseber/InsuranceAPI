@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Insurance.Api.Config;
 using Insurance.Api.Repositories.Models;
@@ -9,18 +11,22 @@ namespace Insurance.Api.Repositories
     {
         private readonly IMongoCollection<Repositories.Models.Insurance> _insurances;
         private readonly IMongoCollection<Repositories.Models.Surcharge> _surcharges;
-
+        private readonly IMongoCollection<Repositories.Models.OrderSurcharge> _orderSurcharges;
+        private readonly IMongoDatabase _database;
         private readonly IDbSettings _dbSettings;
+        
+        public IMongoDatabase Database => _database;
         
         public InsuranceRepository(IDbSettings dbSettings)
         {
             _dbSettings = dbSettings;
             
             var client = new MongoClient(_dbSettings.ConnectionString);
-            var database = client.GetDatabase(_dbSettings.DBName);
+            _database = client.GetDatabase(_dbSettings.DBName);
 
-            _insurances = database.GetCollection<Repositories.Models.Insurance>(_dbSettings.InsuranceCollectionName);
-            _surcharges = database.GetCollection<Repositories.Models.Surcharge>(_dbSettings.SurchargeCollectionName);
+            _insurances = _database.GetCollection<Repositories.Models.Insurance>(_dbSettings.InsuranceCollectionName);
+            _surcharges = _database.GetCollection<Repositories.Models.Surcharge>(_dbSettings.SurchargeCollectionName);
+            _orderSurcharges = _database.GetCollection<Repositories.Models.OrderSurcharge>(_dbSettings.OrderSurchargeCollectionName);
         }
 
         public async Task<float> GetInsuranceByProductPrice(float productPrice)
@@ -41,13 +47,20 @@ namespace Insurance.Api.Repositories
             return surchargeValue?.SurchargeCost ?? 0;
         }
         
+        public async Task<float> GetOrderSurchargeByProductTypeIds(IEnumerable<int> productTypes)
+        {
+            var orderSurcharges = await _orderSurcharges.FindAsync(x => productTypes.Contains(x.ProductTypeId));
+
+            return orderSurcharges.ToList().Sum(x => x.OrderSurchargeCost);
+        }
+
         public async Task<Surcharge> GetSurchargeModelByProductTypeId(int productTypeId)
         {
             var surcharge = await _surcharges.FindAsync(x => x.ProductTypeId == productTypeId);
 
             return surcharge.FirstOrDefault();
         }
-
+        
         public async Task Create(Surcharge surcharge)
         {
             await _surcharges.InsertOneAsync(surcharge);
@@ -67,8 +80,8 @@ namespace Insurance.Api.Repositories
             }
             else
             {
-                surcharge.ProductTypeId = existingSurcharge.ProductTypeId;
-                Update(existingSurcharge.ProductTypeId, surcharge);
+                surcharge.Id = existingSurcharge.Id;
+                await Update(existingSurcharge.ProductTypeId, surcharge);
             }
         }
     }

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Insurance.Api.Repositories;
 
@@ -19,16 +20,22 @@ namespace Insurance.Api.Services
             var productResponseModel = await _businessRules.GetProductTypeAndSalesPrice(productId);
 
             var insurance = Domain.Insurance.New(productId, productResponseModel.SalesPrice,
-                productResponseModel.ProductTypeHasInsurance, productResponseModel.ProductTypeName);
+                productResponseModel.ProductTypeHasInsurance, productResponseModel.ProductTypeId);
 
             var insuranceValue = await _insuranceRepository.GetInsuranceByProductPrice(productResponseModel.SalesPrice);
-            var surchargeValue =
-                await _insuranceRepository.GetSurchargeByProductTypeId(productResponseModel.ProductTypeId);
+            var surchargeValue = await _insuranceRepository.GetSurchargeByProductTypeId(productResponseModel.ProductTypeId);
 
             insurance.CalculateInsuranceValue(insuranceValue);
             insurance.CalculateSurcharge(surchargeValue);
 
             return insurance;
+        }
+
+        public async Task<float> GetOrderSurcharge(IEnumerable<int> productTypes)
+        {
+            var orderSurchargeCost = await _insuranceRepository.GetOrderSurchargeByProductTypeIds(productTypes);
+
+            return orderSurchargeCost;
         }
     }
 }

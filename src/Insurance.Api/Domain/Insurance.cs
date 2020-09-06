@@ -5,7 +5,7 @@ namespace Insurance.Api.Domain
         private int productId;
         private float salesPrice;
         private bool productTypeHasInsurance;
-        private string productTypeName;
+        private int productTypeId;
         private float insuranceValue;
         
         internal Insurance()
@@ -13,21 +13,22 @@ namespace Insurance.Api.Domain
             
         }
 
-        private Insurance(int productId, float salesPrice, bool productTypeHasInsurance, string productTypeName)
+        private Insurance(int productId, float salesPrice, bool productTypeHasInsurance, int productTypeId)
         {
             this.productId = productId;
             this.salesPrice = salesPrice;
             this.productTypeHasInsurance = productTypeHasInsurance;
-            this.productTypeName = productTypeName;
+            this.productTypeId = productTypeId;
             this.insuranceValue = 0;
         }
 
-        public static Insurance New(int productId, float salesPrice, bool productTypeHasInsurance, string productTypeName)
+        public static Insurance New(int productId, float salesPrice, bool productTypeHasInsurance, int productTypeId)
         {
-            return new Insurance(productId, salesPrice, productTypeHasInsurance, productTypeName);
+            return new Insurance(productId, salesPrice, productTypeHasInsurance, productTypeId);
         }
 
         public int ProductId => productId;
+        public int ProductTypeId => productTypeId;
         public float InsuranceValue => insuranceValue;
         
         public void CalculateInsuranceValue(float insuranceValue)
@@ -35,25 +36,6 @@ namespace Insurance.Api.Domain
             if(!this.productTypeHasInsurance) return;
             
             this.insuranceValue += insuranceValue;
-            
-            // if (this.salesPrice < 500)
-            // {
-            //     if (this.productTypeName == "Laptops")
-            //         this.insuranceValue += 500;
-            //     else
-            //         this.insuranceValue = 0;
-            // }
-            // else
-            // {
-            //     if (this.salesPrice > 500 && this.salesPrice < 2000)
-            //         if (this.productTypeHasInsurance)
-            //             insuranceValue += 1000;
-            //     if (this.salesPrice >= 2000)
-            //         if (this.productTypeHasInsurance)
-            //             insuranceValue += 2000;
-            //     if (this.productTypeName == "Laptops" || this.productTypeName == "Smartphones" && this.productTypeHasInsurance)
-            //         this.insuranceValue += 500;
-            // }
         }
 
         public void CalculateSurcharge(float surchargeValue)

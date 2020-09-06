@@ -7,12 +7,11 @@ namespace Insurance.Api.Models
     public class OrderInsuranceResponseModel
     {
         public List<InsuranceResponseModel> InsuranceResponseModels { get; set; }
+        
+        public float SumOfOrderInsurance => InsuranceResponseModels.Sum(x => x.InsuranceValue) + OrderSurcharge;
 
-        public Dictionary<int, int> Quantity => InsuranceResponseModels.ToDictionary(x => x.ProductId,
-            x => InsuranceResponseModels.Select(x=>x.ProductId).Count());
-
-        public float SumOfOrderInsurance => InsuranceResponseModels.Sum(x => x.InsuranceValue);
-
+        public float OrderSurcharge { get; set; }
+        
         public OrderInsuranceResponseModel()
         {
             InsuranceResponseModels = new List<InsuranceResponseModel>();

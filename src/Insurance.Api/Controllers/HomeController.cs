@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Insurance.Api.Models;
@@ -34,11 +35,13 @@ namespace Insurance.Api.Controllers
         public async Task<IActionResult> CalculateInsurance([FromBody] OrderInsuranceRequestModel requestModel)
         {
             var shoppingCartInsuranceResponseModel = new OrderInsuranceResponseModel();
+            var productTypes = new List<int>();
             
-            foreach (var product in requestModel.Products)
+            foreach (var productId in requestModel.ProductIds)
             {
-                var insurance = await _insuranceDomainService.GetInsurance(product.ProductId);
-
+                var insurance = await _insuranceDomainService.GetInsurance(productId);
+                productTypes.Add(insurance.ProductTypeId);
+                
                 var insuranceResponseModel = new InsuranceResponseModel
                 {
                     ProductId = insurance.ProductId,
@@ -48,6 +51,9 @@ namespace Insurance.Api.Controllers
                 shoppingCartInsuranceResponseModel.InsuranceResponseModels.Add(insuranceResponseModel);
             }
 
+            var uniqueProductTypes = productTypes.Distinct();
+            var orderSurcharge = await _insuranceDomainService.GetOrderSurcharge(uniqueProductTypes);
+            shoppingCartInsuranceResponseModel.OrderSurcharge = orderSurcharge;
             
             return Ok(shoppingCartInsuranceResponseModel);
         }

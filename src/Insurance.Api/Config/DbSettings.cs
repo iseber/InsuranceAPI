@@ -4,6 +4,7 @@ namespace Insurance.Api.Config
     {
         string InsuranceCollectionName { get; set; }
         string SurchargeCollectionName { get; set; }
+        string OrderSurchargeCollectionName { get; set; }
         string ConnectionString { get; set; }
         string DBName { get; set; }
     }
@@ -11,6 +12,7 @@ namespace Insurance.Api.Config
     {
         public string InsuranceCollectionName { get; set; }
         public string SurchargeCollectionName { get; set; }
+        public string OrderSurchargeCollectionName { get; set; }
         public string ConnectionString { get; set; }
         public string DBName { get; set; }
     }
