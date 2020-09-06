@@ -66,14 +66,14 @@ namespace Insurance.Api
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                
-                app.UseSwagger();
-
-                app.UseSwaggerUI(c =>
-                {
-                    c.SwaggerEndpoint("/swagger/" + RunningEnvironment.BuildVersion + "/swagger.json", "Insurance API " + RunningEnvironment.BuildVersion);
-                });
             }
+            
+            app.UseSwagger();
+
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/" + RunningEnvironment.BuildVersion + "/swagger.json", "Insurance API " + RunningEnvironment.BuildVersion);
+            });
             
             app.UseMiddleware(typeof(ErrorHandlingMiddleware));
 
